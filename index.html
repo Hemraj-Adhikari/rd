@@ -337,18 +337,80 @@
   @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
 
   /* reveal on scroll */
-  .reveal{ opacity:0; transform:translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal{ opacity:0; transform:translateY(24px); transition: opacity .8s cubic-bezier(.16,.8,.3,1), transform .8s cubic-bezier(.16,.8,.3,1); transition-delay: var(--reveal-delay, 0s); }
   .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* scroll progress bar */
+  .progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%; z-index:200;
+    background: linear-gradient(90deg, var(--sky), var(--orange));
+    box-shadow: 0 0 12px rgba(244,128,30,0.6);
+    transition: width .08s linear;
+  }
+
+  /* nav shrink state */
+  header.nav.scrolled{
+    padding:10px 22px;
+    box-shadow: 0 14px 34px -18px rgba(16,27,54,0.45);
+  }
+
+  /* cursor spotlight in hero */
+  .hero{ position:relative; }
+  .spotlight{
+    position:absolute; width:520px; height:520px; border-radius:50%; pointer-events:none;
+    background: radial-gradient(circle, rgba(47,128,237,0.12), transparent 70%);
+    transform: translate(-50%,-50%);
+    left: var(--sx, 50%); top: var(--sy, 30%);
+    transition: opacity .3s ease;
+    opacity:0; z-index:0;
+  }
+  .hero.spotlight-on .spotlight{ opacity:1; }
+
+  /* tilt on video frame */
+  .video-frame{ transform-style: preserve-3d; will-change: transform; transition: transform .15s ease-out; }
+
+  /* comet traveling on orbit */
+  .comet{
+    position:absolute; width:10px; height:10px; border-radius:50%;
+    background: var(--orange); box-shadow: 0 0 14px 4px rgba(244,128,30,0.7);
+    top:50%; left:50%;
+    transform-origin: 0 0;
+  }
+  .comet.blue{ background:var(--sky); box-shadow: 0 0 14px 4px rgba(47,128,237,0.6); }
+
+  /* magnetic buttons */
+  .magnetic{ display:inline-flex; will-change: transform; transition: transform .2s ease-out; }
+
+  /* counter number pop */
+  .count-num{ display:inline-block; }
+
+  /* button ripple */
+  .btn-primary, .cta-btn, .btn-white{ position:relative; overflow:hidden; }
+  .ripple{
+    position:absolute; border-radius:50%; background: rgba(255,255,255,0.55);
+    transform: scale(0); animation: ripple-anim .6s ease-out forwards; pointer-events:none;
+  }
+  @keyframes ripple-anim{ to{ transform:scale(1); opacity:0; } }
+
+  /* video play/pause toggle button */
+  .video-toggle{
+    position:absolute; bottom:14px; right:14px; width:38px; height:38px; border-radius:50%;
+    background: rgba(10,19,48,0.55); backdrop-filter: blur(6px);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2;
+    border: 1px solid rgba(255,255,255,0.3); transition: transform .2s ease, background .2s ease;
+  }
+  .video-toggle:hover{ transform:scale(1.08); background: rgba(10,19,48,0.75); }
 </style>
 </head>
 <body>
 
+<div class="progress-bar" id="progressBar"></div>
 <div class="field" id="field"></div>
 <div class="orb o1"></div>
 <div class="orb o2"></div>
 
 <div class="nav-shell wrap">
-  <header class="nav">
+  <header class="nav" id="mainNav">
     <a href="#top" class="brand">
       <span class="brand-mark">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="#F4801E"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#fff"/></svg>
@@ -376,17 +438,18 @@
 </div>
 
 <main id="top">
-  <section class="hero wrap">
+  <section class="hero wrap" id="heroSection">
+    <div class="spotlight" id="spotlight"></div>
     <div class="hero-grid">
       <div class="hero-copy reveal">
         <span class="eyebrow"><span class="dot"></span> Trusted since 2003 · UK &amp; Australia</span>
         <h1 class="headline">Realize your <span class="accent">dreams</span> with <span class="underline-accent">global opportunities</span></h1>
         <p class="lede">We're your bridge to studying abroad — honest advice, real universities, and a team that has guided over 10,000 students into some of the world's most respected English-speaking institutions.</p>
         <div class="hero-ctas">
-          <a href="#contact" class="btn-primary">Book a free consultation
+          <a href="#contact" class="btn-primary magnetic">Book a free consultation
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <a href="#story" class="btn-ghost">
+          <a href="#story" class="btn-ghost magnetic">
             <span class="play-ring">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="#101B36"/></svg>
             </span>
@@ -394,22 +457,27 @@
           </a>
         </div>
         <div class="trust-row">
-          <div class="stat"><b>10k+</b><span>Students placed</span></div>
+          <div class="stat"><b><span class="count-num" data-target="10" data-suffix="k+">0</span></b><span>Students placed</span></div>
           <div class="divider"></div>
-          <div class="stat"><b>20+</b><span>Years of trust</span></div>
+          <div class="stat"><b><span class="count-num" data-target="20" data-suffix="+">0</span></b><span>Years of trust</span></div>
           <div class="divider"></div>
-          <div class="stat"><b>3</b><span>Partner universities</span></div>
+          <div class="stat"><b><span class="count-num" data-target="3" data-suffix="">0</span></b><span>Partner universities</span></div>
         </div>
       </div>
 
       <div class="hero-visual reveal">
         <div class="orbit-ring"></div>
         <div class="orbit-ring r2"></div>
-        <div class="video-frame">
-          <video autoplay muted loop playsinline poster="assets/poster.jpg">
+        <div class="comet" id="comet1"></div>
+        <div class="comet blue" id="comet2"></div>
+        <div class="video-frame" id="videoFrame">
+          <video autoplay muted loop playsinline poster="assets/poster.jpg" id="heroVideo">
             <source src="assets/hero-video.mp4" type="video/mp4">
           </video>
           <div class="glow-edge"></div>
+          <div class="video-toggle" id="videoToggle" title="Play/Pause">
+            <svg id="toggleIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="6" y="5" width="4" height="14" rx="1" fill="#fff"/><rect x="14" y="5" width="4" height="14" rx="1" fill="#fff"/></svg>
+          </div>
         </div>
         <div class="badge-float b1">
           <span class="icon-chip">
@@ -481,10 +549,10 @@
   <section id="stats">
     <div class="wrap">
       <div class="stats-band reveal">
-        <div class="stat"><b>10k+</b><span>Students placed</span></div>
-        <div class="stat"><b>20+</b><span>Years of experience</span></div>
-        <div class="stat"><b>10k+</b><span>Testimonials</span></div>
-        <div class="stat"><b>3</b><span>Countries served</span></div>
+        <div class="stat"><b><span class="count-num" data-target="10" data-suffix="k+">0</span></b><span>Students placed</span></div>
+        <div class="stat"><b><span class="count-num" data-target="20" data-suffix="+">0</span></b><span>Years of experience</span></div>
+        <div class="stat"><b><span class="count-num" data-target="10" data-suffix="k+">0</span></b><span>Testimonials</span></div>
+        <div class="stat"><b><span class="count-num" data-target="3" data-suffix="">0</span></b><span>Countries served</span></div>
       </div>
     </div>
   </section>
@@ -601,7 +669,9 @@
 </footer>
 
 <script>
-  // ambient particle field
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- ambient particle field ---------- */
   const field = document.getElementById('field');
   for(let i=0;i<26;i++){
     const s = document.createElement('span');
@@ -615,7 +685,12 @@
     field.appendChild(s);
   }
 
-  // scroll reveal
+  /* ---------- scroll reveal, staggered per section ---------- */
+  const sections = document.querySelectorAll('section, .hero');
+  sections.forEach(section=>{
+    const items = section.querySelectorAll('.reveal');
+    items.forEach((el, i)=> el.style.setProperty('--reveal-delay', (i*0.12)+'s'));
+  });
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
@@ -623,6 +698,152 @@
     });
   }, {threshold:0.15});
   revealEls.forEach(el=>io.observe(el));
+
+  /* ---------- scroll progress bar ---------- */
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* ---------- nav shrink on scroll ---------- */
+  const mainNav = document.getElementById('mainNav');
+  function updateNav(){
+    if(window.scrollY > 30) mainNav.classList.add('scrolled');
+    else mainNav.classList.remove('scrolled');
+  }
+  document.addEventListener('scroll', updateNav, {passive:true});
+  updateNav();
+
+  /* ---------- animated counters ---------- */
+  const counters = document.querySelectorAll('.count-num');
+  const counterIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400;
+      const start = performance.now();
+      function tick(now){
+        const p = Math.min((now-start)/duration, 1);
+        const eased = 1 - Math.pow(1-p, 3);
+        const val = Math.floor(eased * target);
+        el.textContent = val + suffix;
+        if(p < 1) requestAnimationFrame(tick);
+        else el.textContent = target + suffix;
+      }
+      requestAnimationFrame(tick);
+      counterIO.unobserve(el);
+    });
+  }, {threshold:0.5});
+  counters.forEach(c=>counterIO.observe(c));
+
+  /* ---------- hero cursor spotlight ---------- */
+  const heroSection = document.getElementById('heroSection');
+  const spotlight = document.getElementById('spotlight');
+  if(heroSection && !reduceMotion){
+    heroSection.addEventListener('mouseenter', ()=> heroSection.classList.add('spotlight-on'));
+    heroSection.addEventListener('mouseleave', ()=> heroSection.classList.remove('spotlight-on'));
+    heroSection.addEventListener('mousemove', (e)=>{
+      const rect = heroSection.getBoundingClientRect();
+      heroSection.style.setProperty('--sx', (e.clientX-rect.left)+'px');
+      heroSection.style.setProperty('--sy', (e.clientY-rect.top)+'px');
+    });
+  }
+
+  /* ---------- 3D tilt on video frame ---------- */
+  const videoFrame = document.getElementById('videoFrame');
+  if(videoFrame && !reduceMotion){
+    videoFrame.addEventListener('mousemove', (e)=>{
+      const rect = videoFrame.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      const rotateY = px * 14;
+      const rotateX = -py * 14;
+      videoFrame.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    });
+    videoFrame.addEventListener('mouseleave', ()=>{
+      videoFrame.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+  }
+
+  /* ---------- comets traveling around the orbit rings ---------- */
+  const comet1 = document.getElementById('comet1');
+  const comet2 = document.getElementById('comet2');
+  const heroVisual = document.querySelector('.hero-visual');
+  if(comet1 && comet2 && !reduceMotion){
+    let angle1 = 0, angle2 = 90;
+    function animateComets(){
+      const rect = heroVisual.getBoundingClientRect();
+      const cx = rect.width/2, cy = rect.height/2;
+      const r1x = rect.width*0.59, r1y = rect.height*0.59;
+      const r2x = rect.width*0.5, r2y = rect.height*0.5;
+      angle1 += 0.35; angle2 -= 0.55;
+      const a1 = angle1 * Math.PI/180;
+      const a2 = angle2 * Math.PI/180;
+      comet1.style.transform = `translate(${cx + Math.cos(a1)*r1x}px, ${cy + Math.sin(a1)*r1y}px)`;
+      comet2.style.transform = `translate(${cx + Math.cos(a2)*r2x}px, ${cy + Math.sin(a2)*r2y}px)`;
+      requestAnimationFrame(animateComets);
+    }
+    requestAnimationFrame(animateComets);
+  } else if(comet1 && comet2){
+    comet1.style.display = 'none';
+    comet2.style.display = 'none';
+  }
+
+  /* ---------- magnetic buttons ---------- */
+  document.querySelectorAll('.magnetic').forEach(btn=>{
+    if(reduceMotion) return;
+    btn.addEventListener('mousemove', (e)=>{
+      const rect = btn.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width/2) * 0.25;
+      const y = (e.clientY - rect.top - rect.height/2) * 0.35;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('mouseleave', ()=>{ btn.style.transform = 'translate(0,0)'; });
+  });
+
+  /* ---------- button ripple effect ---------- */
+  document.querySelectorAll('.btn-primary, .cta-btn, .btn-white').forEach(btn=>{
+    btn.addEventListener('click', function(e){
+      const rect = this.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      const size = Math.max(rect.width, rect.height) * 2;
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size+'px';
+      ripple.style.left = (e.clientX - rect.left - size/2)+'px';
+      ripple.style.top = (e.clientY - rect.top - size/2)+'px';
+      this.appendChild(ripple);
+      setTimeout(()=>ripple.remove(), 650);
+    });
+  });
+
+  /* ---------- video play/pause toggle ---------- */
+  const heroVideo = document.getElementById('heroVideo');
+  const videoToggle = document.getElementById('videoToggle');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const playIcon = '<path d="M8 5v14l11-7L8 5z" fill="#fff"/>';
+  const pauseIcon = '<rect x="6" y="5" width="4" height="14" rx="1" fill="#fff"/><rect x="14" y="5" width="4" height="14" rx="1" fill="#fff"/>';
+  if(videoToggle){
+    videoToggle.addEventListener('click', ()=>{
+      if(heroVideo.paused){ heroVideo.play(); toggleIcon.innerHTML = pauseIcon; }
+      else { heroVideo.pause(); toggleIcon.innerHTML = playIcon; }
+    });
+  }
+
+  /* ---------- pause hero video decoration when off-screen (perf) ---------- */
+  const heroVisualIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!heroVideo) return;
+      if(entry.isIntersecting){ if(!heroVideo.dataset.userPaused) heroVideo.play(); }
+      else { heroVideo.pause(); }
+    });
+  }, {threshold:0.1});
+  if(heroVisual) heroVisualIO.observe(heroVisual);
 </script>
 
 </body>
