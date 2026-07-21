@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Dreams — Educational Consultancy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101B36;
+    --ink-soft:#3B4568;
+    --navy-deep:#0A1330;
+    --bg-1:#EFF3FA;
+    --bg-2:#E2E8F5;
+    --white:#FFFFFF;
+    --orange:#F4801E;
+    --orange-deep:#E06A0A;
+    --sky:#2F80ED;
+    --line:#D9E0F0;
+    --shadow: 0 20px 50px -20px rgba(16,27,54,0.25);
+    --radius: 22px;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: var(--body);
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none; color:inherit;}
+  ul{list-style:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1280px; margin:0 auto; padding:0 32px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- Ambient background field ---------- */
+  .field{
+    position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;
+  }
+  .field span{
+    position:absolute; border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    opacity:0.7;
+    animation: twinkle 6s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:0.15; transform:scale(0.8);}
+    50%{opacity:0.9; transform:scale(1.15);}
+  }
+  .orb{
+    position:fixed; border-radius:50%; filter:blur(70px); z-index:-1; pointer-events:none;
+  }
+  .orb.o1{ width:520px; height:520px; top:-160px; right:-120px; background:radial-gradient(circle, rgba(47,128,237,0.28), transparent 70%); }
+  .orb.o2{ width:460px; height:460px; bottom:-140px; left:-140px; background:radial-gradient(circle, rgba(244,128,30,0.22), transparent 70%); }
+
+  /* ---------- Nav ---------- */
+  .nav-shell{ position:sticky; top:0; z-index:100; padding:18px 0 0; }
+  header.nav{
+    display:flex; align-items:center; justify-content:space-between;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.6);
+    border-radius:20px;
+    padding:14px 22px;
+    box-shadow: 0 10px 30px -18px rgba(16,27,54,0.35);
+    max-width:1280px; margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; font-family:var(--display); }
+  .brand-mark{
+    width:44px; height:44px; border-radius:13px;
+    background: linear-gradient(145deg, var(--navy-deep), #1A2C5C);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .brand-mark svg{ width:24px; height:24px; }
+  .brand-text .name{ font-weight:700; font-size:18px; letter-spacing:-0.01em; line-height:1.1;}
+  .brand-text .sub{ font-family:var(--body); font-size:11px; color:var(--ink-soft); letter-spacing:0.02em; }
+
+  nav.links{ display:flex; align-items:center; gap:30px; }
+  nav.links a{ font-size:14.5px; font-weight:500; color:var(--ink); position:relative; padding:6px 2px; }
+  nav.links a.active{ color:var(--orange-deep); font-weight:600; }
+  nav.links a.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-8px; height:2px;
+    background: var(--orange); border-radius:2px;
+  }
+  nav.links a:not(.active):hover{ color: var(--sky); }
+
+  .nav-actions{ display:flex; align-items:center; gap:18px; }
+  .login-link{ font-size:14.5px; font-weight:600; color:var(--ink); }
+  .cta-btn{
+    font-family:var(--body); font-weight:600; font-size:14.5px;
+    background: linear-gradient(135deg, var(--orange), var(--orange-deep));
+    color:#fff; padding:12px 22px; border-radius:12px; border:none; cursor:pointer;
+    box-shadow: 0 12px 24px -10px rgba(224,106,10,0.55);
+    display:inline-flex; align-items:center; gap:8px;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .cta-btn:hover{ transform:translateY(-2px); box-shadow: 0 16px 30px -10px rgba(224,106,10,0.65); }
+  .burger{ display:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:70px 0 40px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns: 1.05fr 0.95fr; gap:40px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+    color: var(--orange-deep); background: rgba(244,128,30,0.1);
+    padding:7px 14px; border-radius:100px; margin-bottom:22px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--orange); animation:pulse 1.8s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(0.7);} }
+
+  h1.headline{
+    font-family:var(--display); font-weight:700; letter-spacing:-0.02em;
+    font-size:clamp(38px, 4.4vw, 58px); line-height:1.06; color:var(--ink);
+  }
+  h1.headline .accent{ color: var(--orange-deep); position:relative; white-space:nowrap; }
+  h1.headline .underline-accent{
+    display:inline-block; position:relative;
+  }
+  h1.headline .underline-accent::after{
+    content:""; position:absolute; left:2px; right:2px; bottom:6px; height:12px;
+    background: rgba(47,128,237,0.22); border-radius:6px; z-index:-1;
+  }
+
+  .lede{ margin-top:22px; font-size:17px; line-height:1.65; color:var(--ink-soft); max-width:480px; }
+
+  .hero-ctas{ margin-top:34px; display:flex; align-items:center; gap:22px; }
+  .btn-primary{
+    font-weight:600; font-size:15.5px; color:#fff;
+    background: linear-gradient(135deg, var(--orange), var(--orange-deep));
+    padding:15px 26px; border-radius:14px; display:inline-flex; align-items:center; gap:10px;
+    box-shadow: 0 16px 30px -12px rgba(224,106,10,0.55);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow: 0 22px 36px -12px rgba(224,106,10,0.65); }
+  .btn-primary svg{ transition: transform .2s ease; }
+  .btn-primary:hover svg{ transform:translateX(4px); }
+
+  .btn-ghost{
+    font-weight:600; font-size:15px; color:var(--ink); display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn-ghost .play-ring{
+    width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:#fff;
+    display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow);
+  }
+
+  .trust-row{ margin-top:46px; display:flex; align-items:center; gap:28px; flex-wrap:wrap; }
+  .trust-row .stat{ display:flex; flex-direction:column; }
+  .trust-row .stat b{ font-family:var(--display); font-size:24px; color:var(--ink); }
+  .trust-row .stat span{ font-size:12.5px; color:var(--ink-soft); }
+  .trust-row .divider{ width:1px; height:34px; background:var(--line); }
+  .trust-row .avatars{ display:flex; align-items:center; }
+  .trust-row .avatars img{ width:34px; height:34px; border-radius:50%; border:2px solid #fff; margin-left:-10px; object-fit:cover; }
+  .trust-row .avatars img:first-child{ margin-left:0; }
+
+  /* ---------- Hero visual ---------- */
+  .hero-visual{ position:relative; display:flex; align-items:center; justify-content:center; }
+  .orbit-ring{
+    position:absolute; width:118%; height:118%; border-radius:50%;
+    border:1.5px dashed rgba(47,128,237,0.35);
+    animation: spin 34s linear infinite;
+  }
+  .orbit-ring.r2{ width:100%; height:100%; border-color: rgba(244,128,30,0.3); animation-duration:26s; animation-direction:reverse; }
+  @keyframes spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+
+  .video-frame{
+    position:relative; width:100%; max-width:520px; aspect-ratio:16/9.6;
+    border-radius:28px; overflow:hidden;
+    box-shadow: 0 40px 70px -30px rgba(16,27,54,0.45), 0 0 0 8px rgba(255,255,255,0.5);
+    background: var(--navy-deep);
+  }
+  .video-frame video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .video-frame .glow-edge{
+    position:absolute; inset:0; border-radius:28px; pointer-events:none;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+  }
+  .badge-float{
+    position:absolute; background:#fff; border-radius:16px; padding:12px 16px;
+    box-shadow: var(--shadow); display:flex; align-items:center; gap:10px;
+    animation: floaty 4.5s ease-in-out infinite;
+  }
+  .badge-float.b1{ top:-6%; left:-8%; animation-delay:0.2s; }
+  .badge-float.b2{ bottom:-8%; right:-6%; animation-delay:1.1s; }
+  .badge-float b{ font-family:var(--display); font-size:16px; display:block; line-height:1.1; }
+  .badge-float span{ font-size:11px; color:var(--ink-soft); }
+  .badge-float .icon-chip{
+    width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  }
+  .badge-float.b1 .icon-chip{ background: rgba(47,128,237,0.14); }
+  .badge-float.b2 .icon-chip{ background: rgba(244,128,30,0.14); }
+  @keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+
+  @media (max-width:960px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-visual{ order:-1; margin-bottom:10px; }
+    .lede, .btn-ghost{ max-width:100%; }
+  }
+
+  /* ---------- Partner strip ---------- */
+  .partners{ padding:50px 0 10px; }
+  .partners .label{ text-align:center; font-size:12.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:26px; }
+  .partner-row{
+    display:flex; align-items:center; justify-content:center; gap:56px; flex-wrap:wrap;
+    padding:26px 10px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .partner-item{ display:flex; align-items:center; gap:12px; opacity:0.85; transition:opacity .2s ease, transform .2s ease; }
+  .partner-item:hover{ opacity:1; transform:translateY(-2px); }
+  .partner-item .p-name{ font-family:var(--display); font-weight:600; font-size:15.5px; color:var(--ink); line-height:1.15; }
+  .partner-item .p-sub{ font-size:11.5px; color:var(--ink-soft); }
+  .partner-item .p-mark{ width:38px; height:38px; border-radius:10px; background:#fff; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center; }
+
+  /* ---------- Section shell ---------- */
+  section{ padding:90px 0; position:relative; }
+  .section-head{ max-width:640px; margin:0 auto 50px; text-align:center; }
+  .section-head .eyebrow{ margin-bottom:16px; }
+  .section-head h2{ font-family:var(--display); font-weight:700; font-size:clamp(28px,3.2vw,40px); letter-spacing:-0.01em; }
+  .section-head p{ margin-top:14px; color:var(--ink-soft); font-size:15.5px; line-height:1.6; }
+
+  /* ---------- Story / director ---------- */
+  .story{
+    display:grid; grid-template-columns: 0.85fr 1.15fr; gap:56px; align-items:center;
+  }
+  .story-visual{ position:relative; }
+  .story-visual .frame{
+    border-radius:24px; overflow:hidden; box-shadow: var(--shadow);
+    aspect-ratio:4/5; background:linear-gradient(160deg,#1A2C5C,#0A1330);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .story-visual .frame img{ width:100%; height:100%; object-fit:cover; }
+  .story-visual .quote-chip{
+    position:absolute; left:-30px; bottom:24px; background:#fff; border-radius:18px; padding:20px 22px;
+    box-shadow: var(--shadow); max-width:280px;
+  }
+  .story-visual .quote-chip .mark{ font-family:var(--display); font-size:34px; color:var(--orange); line-height:0.6; }
+  .story-visual .quote-chip p{ font-size:13.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5; }
+  .story-visual .quote-chip .who{ margin-top:10px; font-size:12.5px; font-weight:600; color:var(--ink); }
+
+  .story-copy .eyebrow{ margin-bottom:18px; }
+  .story-copy h2{ font-family:var(--display); font-weight:700; font-size:clamp(26px,3vw,36px); letter-spacing:-0.01em; line-height:1.15; }
+  .story-copy p{ margin-top:18px; color:var(--ink-soft); font-size:15.5px; line-height:1.7; }
+  .story-copy .signature{ margin-top:26px; display:flex; align-items:center; gap:14px; }
+  .story-copy .signature img{ width:52px; height:52px; border-radius:50%; object-fit:cover; }
+  .story-copy .signature b{ display:block; font-family:var(--display); font-size:15px; }
+  .story-copy .signature span{ font-size:12.5px; color:var(--ink-soft); }
+
+  @media (max-width:960px){
+    .story{ grid-template-columns:1fr; }
+    .story-visual .quote-chip{ position:static; margin-top:20px; max-width:100%; }
+  }
+
+  /* ---------- Stats band ---------- */
+  .stats-band{
+    background: linear-gradient(135deg, var(--navy-deep), #16234C);
+    border-radius: 28px; padding:52px 40px; color:#fff;
+    display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
+    box-shadow: 0 40px 70px -30px rgba(10,19,48,0.55);
+  }
+  .stats-band .stat{ text-align:center; border-right:1px solid rgba(255,255,255,0.12); }
+  .stats-band .stat:last-child{ border-right:none; }
+  .stats-band .stat b{ font-family:var(--display); font-size:clamp(28px,3vw,38px); display:block; background: linear-gradient(135deg,#fff,#FFD9B0); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .stats-band .stat span{ font-size:13px; color:rgba(255,255,255,0.7); margin-top:6px; display:block; }
+  @media (max-width:760px){
+    .stats-band{ grid-template-columns:repeat(2,1fr); }
+    .stats-band .stat{ border-right:none; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:18px; }
+  }
+
+  /* ---------- Universities detail cards ---------- */
+  .uni-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .uni-card{
+    background:#fff; border-radius:22px; padding:30px; box-shadow: var(--shadow);
+    transition: transform .25s ease, box-shadow .25s ease; border:1px solid rgba(255,255,255,0.6);
+  }
+  .uni-card:hover{ transform:translateY(-6px); box-shadow: 0 30px 55px -20px rgba(16,27,54,0.3); }
+  .uni-card .mark{ width:52px; height:52px; border-radius:14px; background: rgba(47,128,237,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+  .uni-card h3{ font-family:var(--display); font-size:18px; margin-bottom:10px; }
+  .uni-card p{ font-size:14px; color:var(--ink-soft); line-height:1.65; }
+  @media (max-width:900px){ .uni-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- Testimonials ---------- */
+  .test-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:26px; }
+  .test-card{
+    background:#fff; border-radius:22px; padding:34px; box-shadow: var(--shadow); position:relative;
+  }
+  .test-card .mark{ font-family:var(--display); font-size:44px; color:var(--orange); line-height:0.5; }
+  .test-card p{ margin-top:16px; font-size:15.5px; color:var(--ink); line-height:1.65; }
+  .test-card .who{ margin-top:22px; display:flex; align-items:center; gap:12px; }
+  .test-card .who img{ width:44px; height:44px; border-radius:50%; object-fit:cover; }
+  .test-card .who b{ font-family:var(--display); font-size:14.5px; display:block; }
+  .test-card .who span{ font-size:12.5px; color:var(--ink-soft); }
+  @media (max-width:800px){ .test-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- CTA band ---------- */
+  .cta-band{
+    background: linear-gradient(120deg, var(--orange), var(--orange-deep));
+    border-radius:28px; padding:60px 50px; text-align:center; color:#fff; position:relative; overflow:hidden;
+  }
+  .cta-band::before{
+    content:""; position:absolute; width:340px; height:340px; border-radius:50%;
+    background: rgba(255,255,255,0.14); top:-140px; right:-100px;
+  }
+  .cta-band h2{ font-family:var(--display); font-weight:700; font-size:clamp(26px,3vw,36px); }
+  .cta-band p{ margin-top:14px; font-size:15.5px; opacity:0.92; max-width:520px; margin-left:auto; margin-right:auto; }
+  .cta-band .btn-white{
+    margin-top:28px; display:inline-flex; align-items:center; gap:10px; background:#fff; color:var(--orange-deep);
+    font-weight:700; padding:15px 28px; border-radius:14px; font-size:15.5px;
+    box-shadow: 0 16px 30px -12px rgba(10,19,48,0.35);
+    transition: transform .2s ease;
+  }
+  .cta-band .btn-white:hover{ transform:translateY(-3px); }
+
+  /* ---------- Footer ---------- */
+  footer{ padding:60px 0 40px; }
+  .footer-grid{ display:grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:40px; border-bottom:1px solid var(--line); }
+  .footer-grid h4{ font-family:var(--display); font-size:14.5px; margin-bottom:18px; }
+  .footer-grid p{ font-size:13.5px; color:var(--ink-soft); line-height:1.7; max-width:280px; }
+  .footer-grid ul li{ margin-bottom:12px; }
+  .footer-grid ul a{ font-size:13.5px; color:var(--ink-soft); transition:color .2s ease; }
+  .footer-grid ul a:hover{ color:var(--orange-deep); }
+  .footer-bottom{ padding-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  .footer-bottom span{ font-size:13px; color:var(--ink-soft); }
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+
+  /* reveal on scroll */
+  .reveal{ opacity:0; transform:translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="field" id="field"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
+<div class="nav-shell wrap">
+  <header class="nav">
+    <a href="#top" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="#F4801E"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#fff"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="name">Real Dreams</span>
+        <span class="sub">Educational Consultancy</span>
+      </span>
+    </a>
+    <nav class="links">
+      <a href="#top" class="active">Home</a>
+      <a href="#story">About Us</a>
+      <a href="#universities">Projects</a>
+      <a href="#stats">Resources</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#" class="login-link">Log in</a>
+      <button class="cta-btn">Get Started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+</div>
+
+<main id="top">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
+        <span class="eyebrow"><span class="dot"></span> Trusted since 2003 · UK &amp; Australia</span>
+        <h1 class="headline">Realize your <span class="accent">dreams</span> with <span class="underline-accent">global opportunities</span></h1>
+        <p class="lede">We're your bridge to studying abroad — honest advice, real universities, and a team that has guided over 10,000 students into some of the world's most respected English-speaking institutions.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn-primary">Book a free consultation
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#story" class="btn-ghost">
+            <span class="play-ring">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="#101B36"/></svg>
+            </span>
+            Meet the team
+          </a>
+        </div>
+        <div class="trust-row">
+          <div class="stat"><b>10k+</b><span>Students placed</span></div>
+          <div class="divider"></div>
+          <div class="stat"><b>20+</b><span>Years of trust</span></div>
+          <div class="divider"></div>
+          <div class="stat"><b>3</b><span>Partner universities</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring r2"></div>
+        <div class="video-frame">
+          <video autoplay muted loop playsinline poster="assets/poster.jpg">
+            <source src="assets/hero-video.mp4" type="video/mp4">
+          </video>
+          <div class="glow-edge"></div>
+        </div>
+        <div class="badge-float b1">
+          <span class="icon-chip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="#2F80ED"/></svg>
+          </span>
+          <span><b>10k+</b><span>Graduates abroad</span></span>
+        </div>
+        <div class="badge-float b2">
+          <span class="icon-chip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F4801E" stroke-width="2"/><path d="M8 12l3 3 5-6" stroke="#F4801E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span><b>UK &amp; Australia</b><span>Visa success</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners reveal">
+    <div class="wrap">
+      <p class="label">In partnership with</p>
+      <div class="partner-row">
+        <div class="partner-item">
+          <span class="p-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 5.2L20 8l-4 4 1 5.6L12 15l-5 2.6L8 12 4 8l5.6-.8L12 2z" fill="#12325B"/></svg>
+          </span>
+          <span><span class="p-name">York St John</span><br><span class="p-sub">University</span></span>
+        </div>
+        <div class="partner-item">
+          <span class="p-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1D6FB8" stroke-width="2"/><path d="M8 8c2 3 6 3 8 0" stroke="#1D6FB8" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <span><span class="p-name">University of Worcester</span></span>
+        </div>
+        <div class="partner-item">
+          <span class="p-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#8A2432" stroke-width="2"/><path d="M9 15V9l3 3 3-3v6" stroke="#8A2432" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span><span class="p-name">University of East London</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="story">
+    <div class="wrap story">
+      <div class="story-visual reveal">
+        <div class="frame">
+          <img src="assets/poster.jpg" alt="Real Dreams graduate">
+        </div>
+        <div class="quote-chip">
+          <span class="mark">"</span>
+          <p>Real Dreams was born to be a bridge for students all over the world to make their dreams of studying abroad come true.</p>
+          <div class="who">— Basanta Nepal, Managing Director</div>
+        </div>
+      </div>
+      <div class="story-copy reveal">
+        <span class="eyebrow"><span class="dot"></span> Director's message</span>
+        <h2>The power of honest, reliable, unbiased advice</h2>
+        <p>Since 2003, we've worked as a trusted international educational consultancy — proud to have placed over 10,000 students in some of the world's most prestigious English-speaking colleges and universities.</p>
+        <p>On behalf of the entire team, thank you to every student and partner who has trusted Real Dreams with a journey this important. We solve real problems together, one dream at a time.</p>
+        <div class="signature">
+          <img src="assets/poster.jpg" alt="Basanta Nepal">
+          <div><b>Basanta Nepal</b><span>Managing Director, Real Dreams</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stats">
+    <div class="wrap">
+      <div class="stats-band reveal">
+        <div class="stat"><b>10k+</b><span>Students placed</span></div>
+        <div class="stat"><b>20+</b><span>Years of experience</span></div>
+        <div class="stat"><b>10k+</b><span>Testimonials</span></div>
+        <div class="stat"><b>3</b><span>Countries served</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="universities">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="dot"></span> Preferred partners</span>
+        <h2>Universities we work closely with</h2>
+        <p>Every partner is chosen for outcomes, not just prestige — real programmes, real support, real results for our students.</p>
+      </div>
+      <div class="uni-grid">
+        <div class="uni-card reveal">
+          <span class="mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 5.2L20 8l-4 4 1 5.6L12 15l-5 2.6L8 12 4 8l5.6-.8L12 2z" fill="#2F80ED"/></svg></span>
+          <h3>York St John University</h3>
+          <p>Established as York Diocesan College and granted university status in 2006, York St John sits on a large urban campus with over 6,000 students across Art, Design &amp; Computer Science, Education, and Health Sciences.</p>
+        </div>
+        <div class="uni-card reveal">
+          <span class="mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#2F80ED" stroke-width="2"/><path d="M8 8c2 3 6 3 8 0" stroke="#2F80ED" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <h3>University of Worcester</h3>
+          <p>A public research university dating back to 1946, awarding degrees since 1997 and granted full university status in 2005 — the only university serving Worcestershire and Herefordshire.</p>
+        </div>
+        <div class="uni-card reveal">
+          <span class="mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#2F80ED" stroke-width="2"/><path d="M9 15V9l3 3 3-3v6" stroke="#2F80ED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>University of East London</h3>
+          <p>Based across three campuses in Stratford and Docklands, UEL is home to more than 17,000 students from 135 countries, offering a genuinely global community.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="dot"></span> What our clients say</span>
+        <h2>Trusted by students who took the leap</h2>
+      </div>
+      <div class="test-grid">
+        <div class="test-card reveal">
+          <span class="mark">"</span>
+          <p>Real Dreams made the entire journey feel possible. From my first meeting to landing in the UK, the team was honest about every step — no false promises, just real guidance.</p>
+          <div class="who">
+            <img src="assets/poster.jpg" alt="Student">
+            <div><b>Nirmala Poudel</b><span>MSc Student, University of Worcester</span></div>
+          </div>
+        </div>
+        <div class="test-card reveal">
+          <span class="mark">"</span>
+          <p>I had offers to consider and no idea which university actually fit me. Real Dreams took the time to understand my goals and matched me with the right programme.</p>
+          <div class="who">
+            <img src="assets/poster.jpg" alt="Student">
+            <div><b>Manish Basnet</b><span>BA Student, York St John University</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <h2>Need more information about studying abroad?</h2>
+        <p>If you'd like a chat, please get in touch with our expert consultants at any of our offices — we'll help you find the right path from here.</p>
+        <a href="#" class="btn-white">Talk to a consultant
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#E06A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="#top" class="brand" style="margin-bottom:16px; display:inline-flex;">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="#F4801E"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#fff"/></svg>
+          </span>
+          <span class="brand-text"><span class="name">Real Dreams</span><span class="sub">Educational Consultancy</span></span>
+        </a>
+        <p>Abroad study &amp; migration experts since 2003, helping students turn ambition into acceptance letters.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#story">About Us</a></li>
+          <li><a href="#universities">Universities</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Undergraduate placement</a></li>
+          <li><a href="#">Postgraduate placement</a></li>
+          <li><a href="#">Visa &amp; migration support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">Kathmandu, Nepal</a></li>
+          <li><a href="#">hello@realdreamsedu.com</a></li>
+          <li><a href="#">+977 1-XXXXXXX</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Real Dreams Educational Consultancy. All rights reserved.</span>
+      <span>Built with care in Kathmandu</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ambient particle field
+  const field = document.getElementById('field');
+  for(let i=0;i<26;i++){
+    const s = document.createElement('span');
+    const size = Math.random()*3+1.5;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*6)+'s';
+    s.style.animationDuration = (Math.random()*4+4)+'s';
+    field.appendChild(s);
+  }
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
